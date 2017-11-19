@@ -173,8 +173,7 @@ write.table(TidyData, "TidyData.txt", row.names = FALSE)
 # Generating a Code Book for the tidy data set created above
 
 
-setwd("C:/Users/Portal X/Documents/Data Science Coursera/data/UCI HAR Dataset")
-str(TidyData)
-codebook(TidyData)
-
-Write(codebook(TidyData), file = "TidyData_codebook.txt")
+#setwd("C:/Users/Portal X/Documents/Data Science Coursera/data/UCI HAR Dataset")
+#str(TidyData)
+#codebook(TidyData)
+#Write(codebook(TidyData), file = "TidyData_codebook.txt")
