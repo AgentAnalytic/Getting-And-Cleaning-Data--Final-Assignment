@@ -1,0 +1,1473 @@
+---
+title: "CodeBook of TidyData"
+output: github_document
+---
+
+## Author : Abhishek Katyal
+
+## Date : 19-Nov-2017
+
+
+## Project Discription
+
+
+The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. 
+
+## Collection Of RAW Data
+
+
+The sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and then sampled in fixed-width sliding windows of 2.56 sec and 50% overlap (128 readings/window). The sensor acceleration signal, which has gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. The gravitational force is assumed to have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency was used. From each window, a vector of features was obtained by calculating variables from the time and frequency domain. See 'features_info.txt' for more details. 
+
+## Creating the TidyData set
+
+The RAW data was downloaded from the 
+URL : https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip
+
+Steps Involved in creating the TidyData.txt :
+
+Step 1:loaded the necessary packages for running the script
+
+Step 2:Downloaded the RAW data from the URL provided above
+
+Step 3:Loaded the features.txt & activity_labels.txt on R 
+
+Step 4:In the activity lable values replaced the "_" with " "
+
+Step 5:Since there are duplicate feature names present in features.txt combined the rowid(V1) and the fearure values(V2) to get unique features
+
+Step 6: Converted all the values of features to lower case
+
+Step 7:Set the working directory to load test files on R Objects
+
+Step 8:loaded the subject_test.txt,X_test.txt,y_test.txt,y_test.txt to R Objects
+
+Step 9:Assigned the column names to x_test from the new feature values got from Step:5
+
+Step 10:Set the working directory to load train files on R Objects
+
+Step 11:loaded the subject_train.txt,X_train.txt,y_train.txt,y_train.txt to R Objects
+
+Step 12:Assigned the column names to x_train from the new feature values got from Step:5
+
+Step 13:Merged(row bind) two data set x_test from Step 9 and x_train from Step 12
+
+Step 14:Selecting only columns from the data set from Step 13 containing "mean()" 
+
+Step 15:Selecting only columns from the data set from Step 13 containing "std()" 
+
+Step 16:Merging(Column bind) the resultant data set of Step 14 & 15
+
+Step 17:Row Binding the y_test and y_train (these are the activity label code)
+
+Step 18:Column Binded the Result of step 17 with that of Step 16
+
+Step 19:Renamed the newly added column in Step 18 to "activity_code"
+
+Step 20:Row Binding the subject_test & subject_train 
+
+Step 21:Column binding the resultant of Step 20 with that of the resultant of Step 19
+
+Step 22:Renamed the newly added column in Step 21 to "subject_person_ID"
+
+Step 23:Renaming the column names of activity_lable to V1 to "activity_code" & V2 to "activity_type"
+
+Step 24:Merging the resultant data set of Step 22 with that of activity_lable by left outer Join, where joining 
+column is  "activity_code" and the driving object is the resultant data set of step 22
+
+Step 25:Removing the activity_code column from the resultant data set of Step 24 as it is not required
+
+Step 26:Renaming the column names of the resultant data sset of Step 25 to more discriptive names and removing symbols and digits
+
+Step 27:Extracting the column names of the resultant data set in step 25 into an object name_list
+
+Step 28:Replacing "_" from name_list to " "
+
+Step 29:Replacing "-" from name_list to " "
+
+Step 30:Replacing "()" from name_list to ""
+
+Step 31:Converting all the first alphabet of the words in the name_list to capital
+
+Step 32:Replacing "-" from name_list to ""
+
+Step 33:Removing all the digits from the column names in name_list
+
+Step 34:Replacing the duplicate bodybody column name content in name_list to Body
+
+Step 35:Replacing the body column name content in name_list to Body
+
+Step 36:Replaing the gyro column name content in name_list to Gyro
+
+Step 36:Replacing the std column name content in name_list to StandardDev
+
+Step 37:Replacing the mean column name content in name_list to Mean
+
+Step 38:Replacing the gravity column name content in name_list to Gravity
+
+Step 39:Replacing the acc column name content in name_list to Acc
+
+Step 40:Replacing the jerk column name content in name_list to Jerk
+
+Step 41:Replacing the mag column name content in name_list to Mag
+
+Step 42:Replacing the Tbody column name content in name_list to TimeDomBody
+
+Step 43:Replacing the Fbody column name content in name_list to FreqDomBody
+
+Step 44:Replacing the TGravity column name content in name_list to TimeDomGravity
+
+Step 45:Removing both trailing and leading white spaces
+
+Step 46:Replacing column names ending with x with XAxis
+
+Step 47:Replacing column names ending with y with YAxis
+
+Step 48:Replacing column names ending with z with ZAxis
+
+Step 49:Replacing all " " with "" in name_list
+
+Step 50:Assigining this resultant column names "name_list" to the names or column names of the                 resultant data set of Step 25
+
+Step 51: Creating the TidyData Set by grouping the result of Step 50 by Activity Type & Subject and the getting the average of the rest of the column values
+
+Step 52:Adding the AverageOf in front of all the column names of the result of Step 51 except Activity Type and Subject
+
+## Abbreviation used in the column names of the TidyData Set
+
+1.TimeDom = Time Domain Signals values
+2.FreqDom = Frequency Domain Signal Values
+3.Acc = Acceleration
+4.Mag = Magnitude
+5.Gyro = Gyroscope
+6.StandardDev = Standard Deviation
+
+eg.AvgerageOfTimeDomBodyGyroStandardDevZAxis = Average Of Time Domain Signal of the Body movement picked up by the Gyroscope sensor's standard deviation in the Z Axis Direction
+
+
+
+## Generading Codebook Stats R Code:
+
+
+
+```{r Codebook, echo=FALSE, message=FALSE, warning=FALSE}
+# This script gets creates a TidyData Set as .txt file from RAW data got from the URL (https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip)
+# Combins test and train data and then the add's column name to it and selects only mean and std measures from the data set.
+# finally renames the column names of the result appropriatly and make a TidyData with the average of the mean and std values extracted ealier by activity type and Subject
+
+library(dplyr)
+library(stringr)
+library(memisc)
+
+
+
+
+#Setting the Dir to get features
+
+setwd("C:/Users/Portal X/Documents/Data Science Coursera/data/UCI HAR Dataset")
+
+
+features <- read.table("features.txt")
+activity_label <- read.table("activity_labels.txt")
+activity_label$V2 <- gsub("_"," ",activity_label$V2)
+
+# Since there are duplicate values in features$V2 combining features$V1 and features$v2 to give unique values to features$V3 which will be used as the header names for the data set
+
+l <- length(features$V2)
+
+for(i in 1:l){features[i,3] <- paste(features[i,1],"-",features[i,2])}
+
+features$V3 <- tolower(features$V3)
+
+
+# Setting the Dir for importing the  Test Data
+
+setwd("C:/Users/Portal X/Documents/Data Science Coursera/data/UCI HAR Dataset/test")
+
+subject_test <- read.table("subject_test.txt")
+x_test<- read.table("X_test.txt")
+y_test <- read.table("y_test.txt")
+names(x_test) <- features$V3
+
+
+
+# Setting the Dir for importing the  Train Data
+
+setwd("C:/Users/Portal X/Documents/Data Science Coursera/data/UCI HAR Dataset/train")
+
+subject_train <- read.table("subject_train.txt")
+x_train<- read.table("X_train.txt")
+y_train<- read.table("y_train.txt")
+
+names(x_train) <- features$V3
+
+# Merging Train & Test Data Set
+
+data_train_test <- rbind.data.frame(x_train,x_test)
+
+#selecting the columns in "data" related to mean() calculation
+
+
+
+data_mean <- dplyr::select(data_train_test,contains("mean()"))
+
+#selecting the columns in "data" related to std() calculation
+
+
+data_std <- dplyr::select(data_train_test,contains("std()"))
+
+# combining the data_mean and data_std in one data frame
+
+data_mean_std <- cbind.data.frame(data_mean,data_std)
+
+
+#merging activity label with that data_mean_std
+
+activity_code <-  rbind(y_train,y_test)
+
+data_mean_std <-  cbind.data.frame(data_mean_std,activity_code)
+data_mean_std <- dplyr::rename(data_mean_std,"activity_code" = "V1")
+
+#merging subject_test & subject_train to data_mean_std
+
+subject_person_ID <- rbind(subject_train,subject_test)
+
+data_mean_std <- cbind.data.frame(data_mean_std,subject_person_ID)
+data_mean_std <- dplyr::rename(data_mean_std,"subject_person_ID" = "V1")
+
+
+#giving activity_label a descriptive activity names to name the activities in the data set 
+
+activity_label <- dplyr::rename(activity_label, "activity_type" = "V2")
+activity_label <- dplyr::rename(activity_label, "activity_code" = "V1")
+
+
+data_set <- merge(data_mean_std, activity_label,by = "activity_code",all.x=  TRUE)
+
+# Removing the un-necessary column activity_code for the data_set resulting from above
+
+data_set <- dplyr::select(data_set,-activity_code)
+
+#Appropriately labeling the data set with descriptive variable names. 
+
+name_list <- names(data_set)
+
+name_list <- gsub("_"," ",name_list)
+name_list <- gsub("-"," ",name_list)
+name_list <- gsub("[()]","",name_list)
+
+name_list <- str_to_title(name_list)
+
+
+name_list <-sub("[-]","",name_list)
+
+name_list <-sub("[0-9]","",name_list)
+name_list <-sub("[0-9]","",name_list)
+name_list <-sub("[0-9]","",name_list)
+name_list <-sub("[0-9]","",name_list)
+name_list <-sub("[0-9]","",name_list)
+
+name_list <-sub("bodybody","body",name_list)
+name_list <-sub("body","Body",name_list)
+
+name_list <-sub("gyro","Gyro",name_list)
+
+name_list <-sub("Std","StandardDev",name_list)
+name_list <-sub("mean","Mean",name_list)
+name_list <-sub("gravity","Gravity",name_list)
+name_list <-sub("acc","Acc",name_list)
+name_list <-sub("jerk","Jerk",name_list)
+name_list <-sub("mag","Mag",name_list)
+
+name_list <-sub("TBody","TimeDomBody",name_list)
+name_list <-sub("FBody","FreqDomBody",name_list)
+name_list <-sub("TGravity","TimeDomGravity",name_list)
+
+name_list <-trimws(name_list,which = "both")
+
+name_list <-sub("X$","XAxis",name_list)
+name_list <-sub("Y$","YAxis",name_list)
+name_list <-sub("Z$","ZAxis",name_list)
+name_list <- gsub(" ","",name_list)
+
+names(data_set) <- name_list
+
+
+# Setp 5 : Creating a second data set(TidyDatana) from  the above resulting data set with average of each activity and subject
+
+TidyData <- data_set %>% group_by(ActivityType,SubjectPersonId) %>% summarise_each(funs = "mean")
+
+names(TidyData) <- sub("Time","AvgerageOfTime",names(TidyData))
+
+names(TidyData) <- sub("Freq","AvgerageOfFreq",names(TidyData))
+
+TidyData$ActivityType <- as.factor(TidyData$ActivityType )
+TidyData$SubjectPersonId <- as.factor(TidyData$SubjectPersonId)
+
+setwd("C:/Users/Portal X/Documents/Data Science Coursera/data/UCI HAR Dataset")
+
+write.table(TidyData,"TidyData.txt",row.names = FALSE)
+
+
+
+
+# Generating a Code Book for the tidy data set created above
+
+
+setwd("C:/Users/Portal X/Documents/Data Science Coursera/data/UCI HAR Dataset")
+str(TidyData)
+codebook(TidyData)
+
+Write(codebook(TidyData),file="TidyData_codebook.txt")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+# Result generated by the abve Code for Codebook:
+
+Classes 'grouped_df', 'tbl_df', 'tbl' and 'data.frame':	180 obs. of  68 variables:
+ $ ActivityType                                 : Factor w/ 6 levels "LAYING","SITTING",..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ SubjectPersonId                              : Factor w/ 30 levels "1","2","3","4",..: 1 2 3 4 5 6 7 8 9 10 ...
+ $ AvgerageOfTimeDomBodyAccMeanXAxis            : num  0.222 0.281 0.276 0.264 0.278 ...
+ $ AvgerageOfTimeDomBodyAccMeanYAxis            : num  -0.0405 -0.0182 -0.019 -0.015 -0.0183 ...
+ $ AvgerageOfTimeDomBodyAccMeanZAxis            : num  -0.113 -0.107 -0.101 -0.111 -0.108 ...
+ $ AvgerageOfTimeDomGravityAccMeanXAxis         : num  -0.249 -0.51 -0.242 -0.421 -0.483 ...
+ $ AvgerageOfTimeDomGravityAccMeanYAxis         : num  0.706 0.753 0.837 0.915 0.955 ...
+ $ AvgerageOfTimeDomGravityAccMeanZAxis         : num  0.446 0.647 0.489 0.342 0.264 ...
+ $ AvgerageOfTimeDomBodyAccJerkMeanXAxis        : num  0.0811 0.0826 0.077 0.0934 0.0848 ...
+ $ AvgerageOfTimeDomBodyAccJerkMeanYAxis        : num  0.00384 0.01225 0.0138 0.00693 0.00747 ...
+ $ AvgerageOfTimeDomBodyAccJerkMeanZAxis        : num  0.01083 -0.0018 -0.00436 -0.00641 -0.00304 ...
+ $ AvgerageOfTimeDomBodyGyroMeanXAxis           : num  -0.01655 -0.01848 -0.02082 -0.00923 -0.02189 ...
+ $ AvgerageOfTimeDomBodyGyroMeanYAxis           : num  -0.0645 -0.1118 -0.0719 -0.093 -0.0799 ...
+ $ AvgerageOfTimeDomBodyGyroMeanZAxis           : num  0.149 0.145 0.138 0.17 0.16 ...
+ $ AvgerageOfTimeDomBodyGyroJerkMeanXAxis       : num  -0.107 -0.102 -0.1 -0.105 -0.102 ...
+ $ AvgerageOfTimeDomBodyGyroJerkMeanYAxis       : num  -0.0415 -0.0359 -0.039 -0.0381 -0.0404 ...
+ $ AvgerageOfTimeDomBodyGyroJerkMeanZAxis       : num  -0.0741 -0.0702 -0.0687 -0.0712 -0.0708 ...
+ $ AvgerageOfTimeDomBodyAccMagMean              : num  -0.842 -0.977 -0.973 -0.955 -0.967 ...
+ $ AvgerageOfTimeDomGravityAccMagMean           : num  -0.842 -0.977 -0.973 -0.955 -0.967 ...
+ $ AvgerageOfTimeDomBodyAccJerkMagMean          : num  -0.954 -0.988 -0.979 -0.97 -0.98 ...
+ $ AvgerageOfTimeDomBodyGyroMagMean             : num  -0.875 -0.95 -0.952 -0.93 -0.947 ...
+ $ AvgerageOfTimeDomBodyGyroJerkMagMean         : num  -0.963 -0.992 -0.987 -0.985 -0.986 ...
+ $ AvgerageOfFreqDomBodyAccMeanXAxis            : num  -0.939 -0.977 -0.981 -0.959 -0.969 ...
+ $ AvgerageOfFreqDomBodyAccMeanYAxis            : num  -0.867 -0.98 -0.961 -0.939 -0.965 ...
+ $ AvgerageOfFreqDomBodyAccMeanZAxis            : num  -0.883 -0.984 -0.968 -0.968 -0.977 ...
+ $ AvgerageOfFreqDomBodyAccJerkMeanXAxis        : num  -0.957 -0.986 -0.981 -0.979 -0.983 ...
+ $ AvgerageOfFreqDomBodyAccJerkMeanYAxis        : num  -0.922 -0.983 -0.969 -0.944 -0.965 ...
+ $ AvgerageOfFreqDomBodyAccJerkMeanZAxis        : num  -0.948 -0.986 -0.979 -0.975 -0.983 ...
+ $ AvgerageOfFreqDomBodyGyroMeanXAxis           : num  -0.85 -0.986 -0.97 -0.967 -0.976 ...
+ $ AvgerageOfFreqDomBodyGyroMeanYAxis           : num  -0.952 -0.983 -0.978 -0.972 -0.978 ...
+ $ AvgerageOfFreqDomBodyGyroMeanZAxis           : num  -0.909 -0.963 -0.962 -0.961 -0.963 ...
+ $ AvgerageOfFreqDomBodyAccMagMean              : num  -0.862 -0.975 -0.966 -0.939 -0.962 ...
+ $ AvgerageOfFreqDomBodyAccJerkMagMean          : num  -0.933 -0.985 -0.976 -0.962 -0.977 ...
+ $ AvgerageOfFreqDomBodyGyroMagMean             : num  -0.862 -0.972 -0.965 -0.962 -0.968 ...
+ $ AvgerageOfFreqDomBodyGyroJerkMagMean         : num  -0.942 -0.99 -0.984 -0.984 -0.985 ...
+ $ AvgerageOfTimeDomBodyAccStandardDevXAxis     : num  -0.928 -0.974 -0.983 -0.954 -0.966 ...
+ $ AvgerageOfTimeDomBodyAccStandardDevYAxis     : num  -0.837 -0.98 -0.962 -0.942 -0.969 ...
+ $ AvgerageOfTimeDomBodyAccStandardDevZAxis     : num  -0.826 -0.984 -0.964 -0.963 -0.969 ...
+ $ AvgerageOfTimeDomGravityAccStandardDevXAxis  : num  -0.897 -0.959 -0.983 -0.921 -0.946 ...
+ $ AvgerageOfTimeDomGravityAccStandardDevYAxis  : num  -0.908 -0.988 -0.981 -0.97 -0.986 ...
+ $ AvgerageOfTimeDomGravityAccStandardDevZAxis  : num  -0.852 -0.984 -0.965 -0.976 -0.977 ...
+ $ AvgerageOfTimeDomBodyAccJerkStandardDevXAxis : num  -0.958 -0.986 -0.981 -0.978 -0.983 ...
+ $ AvgerageOfTimeDomBodyAccJerkStandardDevYAxis : num  -0.924 -0.983 -0.969 -0.942 -0.965 ...
+ $ AvgerageOfTimeDomBodyAccJerkStandardDevZAxis : num  -0.955 -0.988 -0.982 -0.979 -0.985 ...
+ $ AvgerageOfTimeDomBodyGyroStandardDevXAxis    : num  -0.874 -0.988 -0.975 -0.973 -0.979 ...
+ $ AvgerageOfTimeDomBodyGyroStandardDevYAxis    : num  -0.951 -0.982 -0.977 -0.961 -0.977 ...
+ $ AvgerageOfTimeDomBodyGyroStandardDevZAxis    : num  -0.908 -0.96 -0.964 -0.962 -0.961 ...
+ $ AvgerageOfTimeDomBodyGyroJerkStandardDevXAxis: num  -0.919 -0.993 -0.98 -0.975 -0.983 ...
+ $ AvgerageOfTimeDomBodyGyroJerkStandardDevYAxis: num  -0.968 -0.99 -0.987 -0.987 -0.984 ...
+ $ AvgerageOfTimeDomBodyGyroJerkStandardDevZAxis: num  -0.958 -0.988 -0.983 -0.984 -0.99 ...
+ $ AvgerageOfTimeDomBodyAccMagStandardDev       : num  -0.795 -0.973 -0.964 -0.931 -0.959 ...
+ $ AvgerageOfTimeDomGravityAccMagStandardDev    : num  -0.795 -0.973 -0.964 -0.931 -0.959 ...
+ $ AvgerageOfTimeDomBodyAccJerkMagStandardDev   : num  -0.928 -0.986 -0.976 -0.961 -0.977 ...
+ $ AvgerageOfTimeDomBodyGyroMagStandardDev      : num  -0.819 -0.961 -0.954 -0.947 -0.958 ...
+ $ AvgerageOfTimeDomBodyGyroJerkMagStandardDev  : num  -0.936 -0.99 -0.983 -0.983 -0.984 ...
+ $ AvgerageOfFreqDomBodyAccStandardDevXAxis     : num  -0.924 -0.973 -0.984 -0.952 -0.965 ...
+ $ AvgerageOfFreqDomBodyAccStandardDevYAxis     : num  -0.834 -0.981 -0.964 -0.946 -0.973 ...
+ $ AvgerageOfFreqDomBodyAccStandardDevZAxis     : num  -0.813 -0.985 -0.963 -0.962 -0.966 ...
+ $ AvgerageOfFreqDomBodyAccJerkStandardDevXAxis : num  -0.964 -0.987 -0.983 -0.98 -0.986 ...
+ $ AvgerageOfFreqDomBodyAccJerkStandardDevYAxis : num  -0.932 -0.985 -0.971 -0.944 -0.966 ...
+ $ AvgerageOfFreqDomBodyAccJerkStandardDevZAxis : num  -0.961 -0.989 -0.984 -0.98 -0.986 ...
+ $ AvgerageOfFreqDomBodyGyroStandardDevXAxis    : num  -0.882 -0.989 -0.976 -0.975 -0.981 ...
+ $ AvgerageOfFreqDomBodyGyroStandardDevYAxis    : num  -0.951 -0.982 -0.977 -0.956 -0.977 ...
+ $ AvgerageOfFreqDomBodyGyroStandardDevZAxis    : num  -0.917 -0.963 -0.967 -0.966 -0.963 ...
+ $ AvgerageOfFreqDomBodyAccMagStandardDev       : num  -0.798 -0.975 -0.968 -0.937 -0.963 ...
+ $ AvgerageOfFreqDomBodyAccJerkMagStandardDev   : num  -0.922 -0.985 -0.975 -0.958 -0.976 ...
+ $ AvgerageOfFreqDomBodyGyroMagStandardDev      : num  -0.824 -0.961 -0.955 -0.947 -0.959 ...
+ $ AvgerageOfFreqDomBodyGyroJerkMagStandardDev  : num  -0.933 -0.989 -0.983 -0.983 -0.983 ...
+ - attr(*, "vars")= chr "ActivityType"
+ - attr(*, "drop")= logi TRUE
+ 
+ 
+ ================================================================================================================
+
+   ActivityType
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: integer
+   Factor with 6 levels
+
+        Values and labels    N    Percent 
+                                          
+   1 'LAYING'               30   16.7     
+   2 'SITTING'              30   16.7     
+   3 'STANDING'             30   16.7     
+   4 'WALKING'              30   16.7     
+   5 'WALKING DOWNSTAIRS'   30   16.7     
+   6 'WALKING UPSTAIRS'     30   16.7     
+
+================================================================================================================
+
+   SubjectPersonId
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: integer
+   Factor with 30 levels
+
+   Values and labels   N   Percent
+                                  
+              1 '1'    6   3.3    
+              2 '2'    6   3.3    
+              3 '3'    6   3.3    
+              4 '4'    6   3.3    
+              5 '5'    6   3.3    
+              6 '6'    6   3.3    
+              7 '7'    6   3.3    
+              8 '8'    6   3.3    
+              9 '9'    6   3.3    
+             10 '10'   6   3.3    
+             11 '11'   6   3.3    
+             12 '12'   6   3.3    
+             13 '13'   6   3.3    
+             14 '14'   6   3.3    
+             15 '15'   6   3.3    
+             16 '16'   6   3.3    
+             17 '17'   6   3.3    
+             18 '18'   6   3.3    
+             19 '19'   6   3.3    
+             20 '20'   6   3.3    
+             21 '21'   6   3.3    
+             22 '22'   6   3.3    
+             23 '23'   6   3.3    
+             24 '24'   6   3.3    
+             25 '25'   6   3.3    
+             26 '26'   6   3.3    
+             27 '27'   6   3.3    
+             28 '28'   6   3.3    
+             29 '29'   6   3.3    
+             30 '30'   6   3.3    
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccMeanXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  0.222
+       1st Qu.:  0.271
+        Median:  0.277
+          Mean:  0.274
+       3rd Qu.:  0.280
+          Max.:  0.301
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccMeanYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.041
+       1st Qu.:  -0.020
+        Median:  -0.017
+          Mean:  -0.018
+       3rd Qu.:  -0.015
+          Max.:  -0.001
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccMeanZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.153
+       1st Qu.:  -0.112
+        Median:  -0.108
+          Mean:  -0.109
+       3rd Qu.:  -0.104
+          Max.:  -0.075
+
+================================================================================================================
+
+   AvgerageOfTimeDomGravityAccMeanXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.680
+       1st Qu.:   0.838
+        Median:   0.921
+          Mean:   0.697
+       3rd Qu.:   0.943
+          Max.:   0.975
+
+================================================================================================================
+
+   AvgerageOfTimeDomGravityAccMeanYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.480
+       1st Qu.:  -0.233
+        Median:  -0.128
+          Mean:  -0.016
+       3rd Qu.:   0.088
+          Max.:   0.957
+
+================================================================================================================
+
+   AvgerageOfTimeDomGravityAccMeanZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.495
+       1st Qu.:  -0.117
+        Median:   0.024
+          Mean:   0.074
+       3rd Qu.:   0.149
+          Max.:   0.958
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccJerkMeanXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  0.043
+       1st Qu.:  0.074
+        Median:  0.076
+          Mean:  0.079
+       3rd Qu.:  0.083
+          Max.:  0.130
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccJerkMeanYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.039
+       1st Qu.:   0.000
+        Median:   0.009
+          Mean:   0.008
+       3rd Qu.:   0.013
+          Max.:   0.057
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccJerkMeanZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.067
+       1st Qu.:  -0.011
+        Median:  -0.004
+          Mean:  -0.005
+       3rd Qu.:   0.002
+          Max.:   0.038
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroMeanXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.206
+       1st Qu.:  -0.047
+        Median:  -0.029
+          Mean:  -0.032
+       3rd Qu.:  -0.017
+          Max.:   0.193
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroMeanYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.204
+       1st Qu.:  -0.090
+        Median:  -0.073
+          Mean:  -0.074
+       3rd Qu.:  -0.061
+          Max.:   0.027
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroMeanZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.072
+       1st Qu.:   0.075
+        Median:   0.085
+          Mean:   0.087
+       3rd Qu.:   0.102
+          Max.:   0.179
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroJerkMeanXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.157
+       1st Qu.:  -0.103
+        Median:  -0.099
+          Mean:  -0.096
+       3rd Qu.:  -0.091
+          Max.:  -0.022
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroJerkMeanYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.077
+       1st Qu.:  -0.046
+        Median:  -0.041
+          Mean:  -0.043
+       3rd Qu.:  -0.038
+          Max.:  -0.013
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroJerkMeanZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.092
+       1st Qu.:  -0.062
+        Median:  -0.053
+          Mean:  -0.055
+       3rd Qu.:  -0.049
+          Max.:  -0.007
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.986
+       1st Qu.:  -0.957
+        Median:  -0.483
+          Mean:  -0.497
+       3rd Qu.:  -0.092
+          Max.:   0.645
+
+================================================================================================================
+
+   AvgerageOfTimeDomGravityAccMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.986
+       1st Qu.:  -0.957
+        Median:  -0.483
+          Mean:  -0.497
+       3rd Qu.:  -0.092
+          Max.:   0.645
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccJerkMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.993
+       1st Qu.:  -0.981
+        Median:  -0.817
+          Mean:  -0.608
+       3rd Qu.:  -0.246
+          Max.:   0.434
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.981
+       1st Qu.:  -0.946
+        Median:  -0.655
+          Mean:  -0.565
+       3rd Qu.:  -0.216
+          Max.:   0.418
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroJerkMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.997
+       1st Qu.:  -0.985
+        Median:  -0.865
+          Mean:  -0.736
+       3rd Qu.:  -0.512
+          Max.:   0.088
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccMeanXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.995
+       1st Qu.:  -0.979
+        Median:  -0.769
+          Mean:  -0.576
+       3rd Qu.:  -0.217
+          Max.:   0.537
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccMeanYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.989
+       1st Qu.:  -0.954
+        Median:  -0.595
+          Mean:  -0.489
+       3rd Qu.:  -0.063
+          Max.:   0.524
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccMeanZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.989
+       1st Qu.:  -0.962
+        Median:  -0.724
+          Mean:  -0.630
+       3rd Qu.:  -0.318
+          Max.:   0.281
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccJerkMeanXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.995
+       1st Qu.:  -0.983
+        Median:  -0.813
+          Mean:  -0.614
+       3rd Qu.:  -0.282
+          Max.:   0.474
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccJerkMeanYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.989
+       1st Qu.:  -0.973
+        Median:  -0.782
+          Mean:  -0.588
+       3rd Qu.:  -0.196
+          Max.:   0.277
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccJerkMeanZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.992
+       1st Qu.:  -0.980
+        Median:  -0.871
+          Mean:  -0.714
+       3rd Qu.:  -0.470
+          Max.:   0.158
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroMeanXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.993
+       1st Qu.:  -0.970
+        Median:  -0.730
+          Mean:  -0.637
+       3rd Qu.:  -0.339
+          Max.:   0.475
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroMeanYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.994
+       1st Qu.:  -0.970
+        Median:  -0.814
+          Mean:  -0.677
+       3rd Qu.:  -0.446
+          Max.:   0.329
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroMeanZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.986
+       1st Qu.:  -0.962
+        Median:  -0.791
+          Mean:  -0.604
+       3rd Qu.:  -0.263
+          Max.:   0.492
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.987
+       1st Qu.:  -0.956
+        Median:  -0.670
+          Mean:  -0.537
+       3rd Qu.:  -0.162
+          Max.:   0.587
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccJerkMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.994
+       1st Qu.:  -0.977
+        Median:  -0.794
+          Mean:  -0.576
+       3rd Qu.:  -0.187
+          Max.:   0.538
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.987
+       1st Qu.:  -0.962
+        Median:  -0.766
+          Mean:  -0.667
+       3rd Qu.:  -0.409
+          Max.:   0.204
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroJerkMagMean
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.998
+       1st Qu.:  -0.981
+        Median:  -0.878
+          Mean:  -0.756
+       3rd Qu.:  -0.583
+          Max.:   0.147
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccStandardDevXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.996
+       1st Qu.:  -0.980
+        Median:  -0.753
+          Mean:  -0.558
+       3rd Qu.:  -0.198
+          Max.:   0.627
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccStandardDevYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.990
+       1st Qu.:  -0.942
+        Median:  -0.509
+          Mean:  -0.460
+       3rd Qu.:  -0.031
+          Max.:   0.617
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccStandardDevZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.988
+       1st Qu.:  -0.950
+        Median:  -0.652
+          Mean:  -0.576
+       3rd Qu.:  -0.231
+          Max.:   0.609
+
+================================================================================================================
+
+   AvgerageOfTimeDomGravityAccStandardDevXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.997
+       1st Qu.:  -0.982
+        Median:  -0.969
+          Mean:  -0.964
+       3rd Qu.:  -0.951
+          Max.:  -0.830
+
+================================================================================================================
+
+   AvgerageOfTimeDomGravityAccStandardDevYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.994
+       1st Qu.:  -0.971
+        Median:  -0.959
+          Mean:  -0.952
+       3rd Qu.:  -0.937
+          Max.:  -0.644
+
+================================================================================================================
+
+   AvgerageOfTimeDomGravityAccStandardDevZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.991
+       1st Qu.:  -0.961
+        Median:  -0.945
+          Mean:  -0.936
+       3rd Qu.:  -0.918
+          Max.:  -0.610
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccJerkStandardDevXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.995
+       1st Qu.:  -0.983
+        Median:  -0.810
+          Mean:  -0.595
+       3rd Qu.:  -0.223
+          Max.:   0.544
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccJerkStandardDevYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.990
+       1st Qu.:  -0.972
+        Median:  -0.776
+          Mean:  -0.565
+       3rd Qu.:  -0.148
+          Max.:   0.355
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccJerkStandardDevZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.993
+       1st Qu.:  -0.983
+        Median:  -0.884
+          Mean:  -0.736
+       3rd Qu.:  -0.512
+          Max.:   0.031
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroStandardDevXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.994
+       1st Qu.:  -0.973
+        Median:  -0.789
+          Mean:  -0.692
+       3rd Qu.:  -0.441
+          Max.:   0.268
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroStandardDevYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.994
+       1st Qu.:  -0.963
+        Median:  -0.802
+          Mean:  -0.653
+       3rd Qu.:  -0.420
+          Max.:   0.477
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroStandardDevZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.986
+       1st Qu.:  -0.961
+        Median:  -0.801
+          Mean:  -0.616
+       3rd Qu.:  -0.311
+          Max.:   0.565
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroJerkStandardDevXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.997
+       1st Qu.:  -0.980
+        Median:  -0.840
+          Mean:  -0.704
+       3rd Qu.:  -0.463
+          Max.:   0.179
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroJerkStandardDevYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.997
+       1st Qu.:  -0.983
+        Median:  -0.894
+          Mean:  -0.764
+       3rd Qu.:  -0.586
+          Max.:   0.296
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroJerkStandardDevZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.995
+       1st Qu.:  -0.985
+        Median:  -0.861
+          Mean:  -0.710
+       3rd Qu.:  -0.474
+          Max.:   0.193
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.986
+       1st Qu.:  -0.943
+        Median:  -0.607
+          Mean:  -0.544
+       3rd Qu.:  -0.209
+          Max.:   0.428
+
+================================================================================================================
+
+   AvgerageOfTimeDomGravityAccMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.986
+       1st Qu.:  -0.943
+        Median:  -0.607
+          Mean:  -0.544
+       3rd Qu.:  -0.209
+          Max.:   0.428
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyAccJerkMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.995
+       1st Qu.:  -0.977
+        Median:  -0.801
+          Mean:  -0.584
+       3rd Qu.:  -0.217
+          Max.:   0.451
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.981
+       1st Qu.:  -0.948
+        Median:  -0.742
+          Mean:  -0.630
+       3rd Qu.:  -0.360
+          Max.:   0.300
+
+================================================================================================================
+
+   AvgerageOfTimeDomBodyGyroJerkMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.998
+       1st Qu.:  -0.980
+        Median:  -0.881
+          Mean:  -0.755
+       3rd Qu.:  -0.577
+          Max.:   0.250
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccStandardDevXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.997
+       1st Qu.:  -0.982
+        Median:  -0.747
+          Mean:  -0.552
+       3rd Qu.:  -0.197
+          Max.:   0.659
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccStandardDevYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.991
+       1st Qu.:  -0.940
+        Median:  -0.513
+          Mean:  -0.481
+       3rd Qu.:  -0.079
+          Max.:   0.560
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccStandardDevZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.987
+       1st Qu.:  -0.946
+        Median:  -0.644
+          Mean:  -0.582
+       3rd Qu.:  -0.265
+          Max.:   0.687
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccJerkStandardDevXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.995
+       1st Qu.:  -0.985
+        Median:  -0.825
+          Mean:  -0.612
+       3rd Qu.:  -0.248
+          Max.:   0.477
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccJerkStandardDevYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.990
+       1st Qu.:  -0.974
+        Median:  -0.785
+          Mean:  -0.571
+       3rd Qu.:  -0.169
+          Max.:   0.350
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccJerkStandardDevZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.993
+       1st Qu.:  -0.984
+        Median:  -0.895
+          Mean:  -0.756
+       3rd Qu.:  -0.544
+          Max.:  -0.006
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroStandardDevXAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.995
+       1st Qu.:  -0.975
+        Median:  -0.809
+          Mean:  -0.711
+       3rd Qu.:  -0.481
+          Max.:   0.197
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroStandardDevYAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.994
+       1st Qu.:  -0.960
+        Median:  -0.796
+          Mean:  -0.645
+       3rd Qu.:  -0.415
+          Max.:   0.646
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroStandardDevZAxis
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.987
+       1st Qu.:  -0.964
+        Median:  -0.822
+          Mean:  -0.658
+       3rd Qu.:  -0.392
+          Max.:   0.522
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.988
+       1st Qu.:  -0.945
+        Median:  -0.651
+          Mean:  -0.621
+       3rd Qu.:  -0.365
+          Max.:   0.179
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyAccJerkMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.994
+       1st Qu.:  -0.975
+        Median:  -0.813
+          Mean:  -0.599
+       3rd Qu.:  -0.267
+          Max.:   0.316
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.981
+       1st Qu.:  -0.949
+        Median:  -0.773
+          Mean:  -0.672
+       3rd Qu.:  -0.428
+          Max.:   0.237
+
+================================================================================================================
+
+   AvgerageOfFreqDomBodyGyroJerkMagStandardDev
+
+----------------------------------------------------------------------------------------------------------------
+
+   Storage mode: double
+
+          Min.:  -0.998
+       1st Qu.:  -0.980
+        Median:  -0.894
+          Mean:  -0.772
+       3rd Qu.:  -0.608
+          Max.:   0.288
+
+
