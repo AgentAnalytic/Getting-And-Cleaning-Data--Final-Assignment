@@ -150,9 +150,7 @@ eg.AvgerageOfTimeDomBodyGyroStandardDevZAxis = Average Of Time Domain Signal of 
 
 
 ```{r Codebook, echo=FALSE, message=FALSE, warning=FALSE}
-# This script gets creates a TidyData Set as .txt file from RAW data got from the URL (https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip)
-# Combins test and train data and then the add's column name to it and selects only mean and std measures from the data set.
-# finally renames the column names of the result appropriatly and make a TidyData with the average of the mean and std values extracted ealier by activity type and Subject
+# This Script generates the Description and Statatic of the measures in the TidyData Set and also creates a .txt file which saves the output(Description & Statitics of Measures in TidyData)
 
 library(dplyr)
 library(stringr)
