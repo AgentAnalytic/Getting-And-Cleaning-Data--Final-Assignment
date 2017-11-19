@@ -136,20 +136,3 @@ Step 51: Creating the TidyData Set by grouping the result of Step 50 by Activity
 
 Step 52:Adding the AverageOf in front of all the column names of the result of Step 51 except Activity Type and Subject
 
-## Abbreviation used in the column names of the TidyData Set
-
-1.TimeDom = Time Domain Signals values
-
-2.FreqDom = Frequency Domain Signal Values
-
-3.Acc = Acceleration
-
-4.Mag = Magnitude
-
-5.Gyro = Gyroscope
-
-6.StandardDev = Standard Deviation
-
-eg.AvgerageOfTimeDomBodyGyroStandardDevZAxis = Average Of Time Domain Signal of the Body movement picked up by the Gyroscope sensor's standard deviation in the Z Axis Direction
-
-
