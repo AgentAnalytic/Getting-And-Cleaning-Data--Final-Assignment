@@ -16,7 +16,9 @@ The sensor signals (accelerometer and gyroscope) were pre-processed by applying 
 ## Content
 
 Codebook.Rmd : Process/Transformation performed on RAW data to get the TidyData, the Discription & Statitcs of the measures in the TidyData Set.
+
 run_analysis.R : The R Script that generates the TidyData Set by performing transformation/processing the RAW Data.
+
 generate_codebook.R : Generates the Discription & Statitcs of the measures in the TidyData Set.
 
 
