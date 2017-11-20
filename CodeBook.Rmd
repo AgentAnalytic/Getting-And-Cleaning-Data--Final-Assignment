@@ -150,7 +150,7 @@ eg.AvgerageOfTimeDomBodyGyroStandardDevZAxis = Average Of Time Domain Signal of 
 
 
 
-## Generading Codebook Stats R Code:
+## Generate Codebook Stats R Code:
 
 
 
